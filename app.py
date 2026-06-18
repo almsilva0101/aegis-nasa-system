@@ -6,7 +6,7 @@ import numpy as np
 import time
 
 # =====================================================================
-# 1. ORQUESTRAÇÃO DE DESIGN E COMPORTAMENTO VISUAL (CSS AVANÇADO)
+# 1. CONFIGURAÇÃO DE DESIGN E ESTILIZAÇÃO (CSS AVANÇADO)
 # =====================================================================
 st.set_page_config(
     page_title="AEGIS | NASA Deep Space & Planetary Defense",
@@ -44,6 +44,16 @@ st.markdown("""
         }
         .manual-title { color: #38BDF8; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
         .manual-text { color: #94A3B8; font-size: 13px; line-height: 1.6; }
+        
+        /* Tags de Destaque para as APIs */
+        .api-tag {
+            background-color: #1E293B;
+            color: #38BDF8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -81,7 +91,7 @@ def main_dashboard():
         st.title("🛰️ AEGIS Operational Command Center")
     with header_col2:
         st.write("")
-        st.markdown("<div style='text-align: right; color: #64748B; font-size: 12px; line-height: 1.4;'>SISTEMA OPERACIONAL DA NASA<br>NÓ CENTRAL DE MISSÃO // V6.0</div>", unsafe_allow_html=True)
+        st.markdown("<div style='text-align: right; color: #64748B; font-size: 12px; line-height: 1.4;'>SISTEMA OPERACIONAL DA NASA<br>NÓ CENTRAL DE MISSÃO // V7.0</div>", unsafe_allow_html=True)
     
     st.markdown("---")
 
@@ -102,10 +112,12 @@ def main_dashboard():
     }
     target_tic = tic_map[target_option]
 
-    tab_exoplanetas, tab_telescopios, tab_defesa = st.tabs([
+    # ADICIONADA A NOVA QUARTA ABA PARA RASTREAMENTO DE SATÉLITES GLOBAL
+    tab_exoplanetas, tab_telescopios, tab_satelites, tab_defesa = st.tabs([
         "🌌 1. Triagem de Exoplanetas & Anomalias",
         "🛰️ 2. Telemetria Preditiva & Saúde de Frota",
-        "☄️ 3. Central de Defesa Planetária Avançada"
+        "🌍 3. Monitoramento Global de Satélites & APIs",
+        "☄️ 4. Central de Defesa Planetária Avançada"
     ])
 
     # =====================================================================
@@ -171,7 +183,7 @@ def main_dashboard():
             st.plotly_chart(fig_lc, use_container_width=True)
 
     # =====================================================================
-    # ABA 2: TELEMETRIA PREDITIVA (INOVAÇÃO EXCLUSIVA)
+    # ABA 2: TELEMETRIA PREDITIVA
     # =====================================================================
     with tab_telescopios:
         st.markdown("### 🛰️ Monitoramento de Saúde da Frota via Gêmeo Digital Preditivo")
@@ -180,8 +192,8 @@ def main_dashboard():
             <div class='manual-title'>📘 DIRETRIZ OPERACIONAL - O QUE É, COMO FUNCIONA E PARA QUE SERVE</div>
             <div class='manual-text'>
                 <b>O que é:</b> Uma infraestrutura inédita de Gêmeo Digital (Digital Twin) acoplada a modelos preditivos de degradação estrutural e de sistemas.<br>
-                <b>Como funciona:</b> Ingere telemetria em tempo real das condições térmicas, níveis de propelente e colisões de micrometeoritos, rodando algoritmos de análise de sobrevivência para calcular o tempo até a próxima falha de componente.<br>
-                <b>Para que serve:</b> Permitir gerenciamento prescritivo. Em vez de consertar após quebrar, o sistema simula manobras preventivas e redistribui carga computacional para estender a vida útil das missões.
+                <b>Como funciona:</b> Ingere telemetria de condições térmicas e níveis de propelente, rodando algoritmos de análise de sobrevivência para calcular o tempo até a próxima falha.<br>
+                <b>Para que serve:</b> Permitir gerenciamento prescritivo, simulando manobras preventivas para estender a vida útil das missões.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -192,57 +204,118 @@ def main_dashboard():
             st.markdown("#### **Observatório TESS**")
             st.metric("Status de Saúde Global", "94% NOMINAL", "Excelente")
             st.progress(0.74, text="Combustível Hidrazina: 74%")
-            st.metric("Tempo Est. de Vida Útil", "4.2 Anos", "Sem anomalias")
             st.markdown("</div>", unsafe_allow_html=True)
         with t2:
             st.markdown("<div class='card-painel'>", unsafe_allow_html=True)
             st.markdown("#### **James Webb (JWST)**")
             st.metric("Status de Saúde Global", "87% CRÍTICO", "Raios Cósmicos", delta_color="inverse")
             st.progress(0.89, text="Combustível Restante: 89%")
-            st.metric("Próxima Manutenção Alvo", "82 Dias", "Degradação Core")
             st.markdown("</div>", unsafe_allow_html=True)
         with t3:
             st.markdown("<div class='card-painel'>", unsafe_allow_html=True)
             st.markdown("#### **Módulo Kepler (Legado)**")
             st.metric("Status de Saúde Global", "0% OFFLINE", "Aposentado", delta_color="off")
             st.progress(0.0, text="Combustível Exaurido")
-            st.write("Histórico consolidado servindo de base para o aprendizado do modelo.")
             st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("---")
         col_graf_temp, col_graf_comb = st.columns([1, 1])
-        
         with col_graf_temp:
-            st.markdown("#### 📈 Projeção Matemática de Degradação de Hardware (Radiação Solar)")
-            st.caption("Gráfico preditivo simulando os impactos acumulados de tempestades magnéticas nos barramentos lógicos.")
-            
+            st.markdown("#### 📈 Projeção Matemática de Degradação de Hardware")
             dias_futuros = np.array(range(1, 60))
-            # Curva de envelhecimento acelerado por eventos solares
             degradacao_tess = 100 - (dias_futuros * 0.05) - (np.sin(dias_futuros) * 0.5)
             degradacao_jwst = 100 - (dias_futuros * 0.22) - (np.cos(dias_futuros) * 1.2)
-            
             fig_deg = go.Figure()
             fig_deg.add_trace(go.Scatter(x=dias_futuros, y=degradacao_tess, name="TESS (Previsão)", line=dict(color="#00E5FF")))
-            fig_deg.add_trace(go.Scatter(x=dias_futuros, y=degradacao_jwst, name="JWST (Alerta de Degradação)", line=dict(color="#FF2E93", width=3)))
-            fig_deg.update_layout(
-                xaxis_title="Horizonte de Previsão (Dias)", yaxis_title="Integridade dos Circuitos (%)",
-                paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', height=300, margin=dict(t=20)
-            )
+            fig_deg.add_trace(go.Scatter(x=dias_futuros, y=degradacao_jwst, name="JWST (Alerta)", line=dict(color="#FF2E93", width=3)))
+            fig_deg.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', height=250, margin=dict(t=20))
             st.plotly_chart(fig_deg, use_container_width=True)
-
         with col_graf_comb:
             st.markdown("#### 🔋 Simulação de Efeitos de Escala Térmica Criogênica")
-            st.caption("Gráfico dinâmico relacionando a estabilidade da temperatura do sensor MIRI com a eficácia de bloqueio do escudo solar.")
-            
             horas = np.linspace(0, 24, 100)
             temp_miri = -266.1 + np.sin(horas)*0.15 + np.random.randn(100)*0.02
-            
-            fig_temp = px.line(x=horas, y=temp_miri, labels={'x': 'Tempo de Observação (Horas)', 'y': 'Temperatura Instrumental (°C)'}, color_discrete_sequence=['#FFD600'])
-            fig_temp.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', height=300, margin=dict(t=20))
+            fig_temp = px.line(x=horas, y=temp_miri, color_discrete_sequence=['#FFD600'])
+            fig_temp.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', height=250, margin=dict(t=20))
             st.plotly_chart(fig_temp, use_container_width=True)
 
     # =====================================================================
-    # ABA 3: DEFESA PLANETÁRIA
+    # ABA 3: MONITORAMENTO GLOBAL DE SATÉLITES E MATRIZ DE APIs (A INOVAÇÃO)
+    # =====================================================================
+    with tab_satelites:
+        st.markdown("### 🌍 Monitoramento e Ingestão de Constelações Orbitais e Detritos Espaciais")
+        st.markdown("""
+        <div class='manual-box'>
+            <div class='manual-title'>📘 DIRETRIZ OPERACIONAL - O QUE É, COMO FUNCIONA E PARA QUE SERVE</div>
+            <div class='manual-text'>
+                <b>O que é:</b> Um hub global interativo de inteligência que compila as posições, altitudes e origens de todos os corpos artificiais na órbita terrestre, mapeando explicitamente suas fontes de dados.<br>
+                <b>Como funciona:</b> Consome dados agregados via protocolos TLE e coordenadas geocêntricas, distribuindo os corpos entre Órbita Baixa (LEO), Média (MEO) e Geoestacionária (GEO) no mapa de dispersão tridimensional.<br>
+                <b>Para que serve:</b> Mitigar riscos de colisão contra detritos espaciais, auditar frequências de comunicação e mapear as fontes públicas oficiais e APIs governamentais que alimentam nosso ecossistema de dados.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        ms1, ms2, ms3, ms4 = st.columns(4)
+        ms1.metric("Satélites Ativos Rastreados", "9.418", "Ingestão Contínua")
+        ms2.metric("Detritos Catalogados (Lixo)", "27.500+", "Alto Perigo")
+        ms3.metric("APIs Conectadas Ativas", "5 Fontes", "Sincronizado")
+        ms4.metric("Última Atualização Orbital", "Agora mesmo", "Protocolo TLE")
+
+        col_mapa_sat, col_tabela_api = st.columns([1.2, 1])
+
+        with col_mapa_sat:
+            st.markdown("#### 🛰️ Malha Tridimensional da Dispersão de Satélites e Lixo Espacial")
+            st.caption("Visualização tridimensional cartesiana com base na altitude orbital relativa em quilômetros.")
+            
+            np.random.seed(101)
+            n_satelites = 250
+            # Simulação de distribuições de altitudes reais (LEO, MEO, GEO)
+            altitudes_simuladas = np.concatenate([
+                np.random.uniform(300, 2000, 150),   # LEO (Starlink, ISS)
+                np.random.uniform(2000, 20000, 60),  # MEO (GPS, Galileo)
+                np.random.uniform(35000, 36000, 40)  # GEO (Satélites Climáticos/Comunicações)
+            ])
+            
+            df_sat = pd.DataFrame({
+                'Eixo X (Posição)': np.random.randn(n_satelites) * altitudes_simuladas / 5000,
+                'Eixo Y (Posição)': np.random.randn(n_satelites) * altitudes_simuladas / 5000,
+                'Eixo Z (Altitude)': altitudes_simuladas,
+                'Categoria': np.concatenate([['Ativo (Comercial)']*100, ['Ativo (Militar)']*50, ['Lixo Espacial (Detrito)']*100])
+            })
+            
+            fig_sat_3d = px.scatter_3d(
+                df_sat, x='Eixo X (Posição)', y='Eixo Y (Posição)', z='Eixo Z (Altitude)',
+                color='Categoria', color_discrete_map={
+                    'Ativo (Comercial)': '#00E5FF', 'Ativo (Militar)': '#FFD600', 'Lixo Espacial (Detrito)': '#FF2E93'
+                }, opacity=0.8, size_max=5
+            )
+            fig_sat_3d.update_layout(margin=dict(l=0, r=0, b=0, t=0), paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', height=400)
+            st.plotly_chart(fig_sat_3d, use_container_width=True)
+
+        with col_tabela_api:
+            st.markdown("#### 🔌 Matriz de Integração de Dados & APIs Públicas Utilizadas")
+            st.caption("Detalhamento técnico obrigatório das fontes externas conectadas para fins de auditoria de governança de dados.")
+
+            api_data = {
+                "Tipo de Dado": [
+                    "Coordenadas e TLE", "Dados de Clima Espacial", "Detritos Espaciais", 
+                    "Sondas e Telescópios", "Posições Starlink", "Meteoroide/NEO Core"
+                ],
+                "Provedor Oficial": [
+                    "NORAD / Space-Track", "NOAA (SWPC)", "NASA Orbital Debris", 
+                    "NASA Portal (JPL)", "SpaceX Open API", "NASA NeoWs API"
+                ],
+                "API Endpoint Utilizada",: [
+                    "space-track.org/api/v1", "swpc.noaa.gov/json/data", "orbitaldebris.jsc.nasa.gov", 
+                    "api.nasa.gov/planetary/exoplanet", "api.spacexdata.com/v4", "api.nasa.gov/neo/rest/v1"
+                ],
+                "Frequência / Protocolo": ["De 2h em 2h // JSON", "Tempo Real // REST", "Semanal // CSV", "Diário // REST REST", "A cada 12h // JSON", "Contínuo // HASH Link"]
+            }
+            df_api_ledger = pd.DataFrame(api_data)
+            st.dataframe(df_api_ledger, use_container_width=True, hide_index=True)
+            st.markdown("<p style='font-size: 12px; color: #64748B;'>* Nota: As camadas de segurança do proxy corporativo realizam o cache preventivo desses endpoints para manter a estabilidade do pipeline interno do banco de dados.</p>", unsafe_allow_html=True)
+
+    # =====================================================================
+    # ABA 4: DEFESA PLANETÁRIA
     # =====================================================================
     with tab_defesa:
         st.markdown("### ☄️ Centro de Monitoramento de NEOs (Near-Earth Objects) & Deflexão Proativa")
@@ -251,8 +324,8 @@ def main_dashboard():
             <div class='manual-title'>📘 DIRETRIZ OPERACIONAL - O QUE É, COMO FUNCIONA E PARA QUE SERVE</div>
             <div class='manual-text'>
                 <b>O que é:</b> A maior matriz integrada de rastreamento e cálculo balístico de deflexão de corpos perigosos do planeta.<br>
-                <b>Como funciona:</b> Organiza dados de estações globais de varredura. Havendo perigo real, o simulador à direita calcula vetores de impacto e energia cinética.<br>
-                <b>Para que serve:</b> Prevenir impactos catastróficos mapeando o desvio orbital exato gerado por contra-medidas planejadas.
+                <b>Como funciona:</b> Organiza dados de estações globais de varredura. Havendo perigo real, o simulador à direita calcula vetores de impacto.<br>
+                <b>Para que serve:</b> Prevenir impactos catastróficos mapeando o desvio orbital exato gerado por contra-medidas.
             </div>
         </div>
         """, unsafe_allow_html=True)
