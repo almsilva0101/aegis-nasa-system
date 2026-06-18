@@ -44,6 +44,16 @@ st.markdown("""
         }
         .manual-title { color: #38BDF8; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
         .manual-text { color: #94A3B8; font-size: 13px; line-height: 1.6; }
+        
+        /* Tags de Destaque para as APIs */
+        .api-tag {
+            background-color: #1E293B;
+            color: #38BDF8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -102,6 +112,7 @@ def main_dashboard():
     }
     target_tic = tic_map[target_option]
 
+    # ADICIONADA A NOVA QUARTA ABA PARA RASTREAMENTO DE SATÉLITES GLOBAL
     tab_exoplanetas, tab_telescopios, tab_satelites, tab_defesa = st.tabs([
         "🌌 1. Triagem de Exoplanetas & Anomalias",
         "🛰️ 2. Telemetria Preditiva & Saúde de Frota",
@@ -228,7 +239,7 @@ def main_dashboard():
             st.plotly_chart(fig_temp, use_container_width=True)
 
     # =====================================================================
-    # ABA 3: MONITORAMENTO GLOBAL DE SATÉLITES E MATRIZ DE APIs
+    # ABA 3: MONITORAMENTO GLOBAL DE SATÉLITES E MATRIZ DE APIs (A INOVAÇÃO)
     # =====================================================================
     with tab_satelites:
         st.markdown("### 🌍 Monitoramento e Ingestão de Constelações Orbitais e Detritos Espaciais")
@@ -257,10 +268,11 @@ def main_dashboard():
             
             np.random.seed(101)
             n_satelites = 250
+            # Simulação de distribuições de altitudes reais (LEO, MEO, GEO)
             altitudes_simuladas = np.concatenate([
-                np.random.uniform(300, 2000, 150),
-                np.random.uniform(2000, 20000, 60),
-                np.random.uniform(35000, 36000, 40)
+                np.random.uniform(300, 2000, 150),   # LEO (Starlink, ISS)
+                np.random.uniform(2000, 20000, 60),  # MEO (GPS, Galileo)
+                np.random.uniform(35000, 36000, 40)  # GEO (Satélites Climáticos/Comunicações)
             ])
             
             df_sat = pd.DataFrame({
@@ -292,15 +304,15 @@ def main_dashboard():
                     "NORAD / Space-Track", "NOAA (SWPC)", "NASA Orbital Debris", 
                     "NASA Portal (JPL)", "SpaceX Open API", "NASA NeoWs API"
                 ],
-                "API Endpoint Utilizada": [
+                "API Endpoint Utilizada",: [
                     "space-track.org/api/v1", "swpc.noaa.gov/json/data", "orbitaldebris.jsc.nasa.gov", 
                     "api.nasa.gov/planetary/exoplanet", "api.spacexdata.com/v4", "api.nasa.gov/neo/rest/v1"
                 ],
-                "Frequência / Protocolo": ["De 2h em 2h // JSON", "Tempo Real // REST", "Semanal // CSV", "Diário // REST", "A cada 12h // JSON", "Contínuo // HASH Link"]
+                "Frequência / Protocolo": ["De 2h em 2h // JSON", "Tempo Real // REST", "Semanal // CSV", "Diário // REST REST", "A cada 12h // JSON", "Contínuo // HASH Link"]
             }
             df_api_ledger = pd.DataFrame(api_data)
             st.dataframe(df_api_ledger, use_container_width=True, hide_index=True)
-            st.markdown("<p style='font-size: 12px; color: #64748B;'>* Nota: As camadas de segurança do proxy corporativo realizam o cache preventivo desses endpoints para manter a estabilidade do pipeline interno.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 12px; color: #64748B;'>* Nota: As camadas de segurança do proxy corporativo realizam o cache preventivo desses endpoints para manter a estabilidade do pipeline interno do banco de dados.</p>", unsafe_allow_html=True)
 
     # =====================================================================
     # ABA 4: DEFESA PLANETÁRIA
@@ -329,4 +341,58 @@ def main_dashboard():
             "Mag. Absoluta (H)": [19.2, 20.8, 15.3, 17.1, 18.1, 24.5, 23.1, 21.4],
             "Escala Torino": [2, 1, 0, 8, 0, 1, 1, 1],
             "Estação de Varredura": ["Goldstone Radar", "Pan-STARRS 1", "Arecibo Node", "AEGIS DeepSpace", "NEOWISE Space", "Mount Lemmon", "Zwicky Transient", "Pan-STARRS 2"],
-            "Risco Classificado
+            "Risco Classificado": ["Atenção Orbital", "Baixo Risco", "Nulo (Seguro)", "Ameaça Crítica Regional", "Nulo (Seguro)", "Monitoramento", "Baixo Risco", "Baixo Risco"]
+        }
+        df_meteoros = pd.DataFrame(meteoros_expandidos)
+        st.dataframe(df_meteoros, use_container_width=True, hide_index=True)
+        st.markdown("---")
+
+        col_radar, col_simulador = st.columns([1.1, 1])
+        with col_radar:
+            st.markdown("#### 🌐 1. Radar de Aproximação de Trajetórias (Visão Geral)")
+            df_plot_radar = df_meteoros.head(6)
+            fig_radar = go.Figure()
+            fig_radar.add_trace(go.Scatter(x=[0], y=[0], mode='markers+text', marker=dict(size=35, color='#00E5FF', line=dict(width=2, color='white')), text=["TERRA"], textposition="top center"))
+            x_coords = [1.2, -0.4, -2.2, 0.06, 2.9, -0.7]
+            y_coords = [0.8, 0.50, 1.4, -0.04, -1.3, -0.3]
+            fig_radar.add_trace(go.Scatter(
+                x=x_coords, y=y_coords, mode='markers+text',
+                marker=dict(size=df_plot_radar["Diâmetro Est. (m)"]/22 + 16, color=df_plot_radar["Escala Torino"], colorscale='Reds', showscale=True),
+                text=df_plot_radar["Designação NEO"], textposition="bottom center"
+            ))
+            fig_radar.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', margin=dict(l=10, r=10, b=10, t=20), height=400, xaxis=dict(range=[-4, 4]), yaxis=dict(range=[-3, 3]))
+            st.plotly_chart(fig_radar, use_container_width=True)
+            
+        with col_simulador:
+            st.markdown("#### 💥 2. Terminal Interativo de Mitigação e Deflexão")
+            st.markdown("<div class='card-painel'>", unsafe_allow_html=True)
+            alvo_defesa = st.selectbox("Selecione o Vetor de Ameaça Ativo:", df_meteoros["Designação NEO"])
+            arma = st.radio("Selecione a Contra-Medida:", ["🚀 Sonda de Impacto Cinético (NASA DART)", "🛰️ Laser Térmico de Superfície", "💥 Dispositivo de Pulso Nuclear"])
+            potencia = st.slider("Potência / Output de Energia do Vetor:", 10, 500, 200)
+            simular_impacto = st.button("💥 EXECUTAR CÁLCULO DE DEFLEXÃO")
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            tempo_trajetoria = np.linspace(-5, 5, 200)
+            y_original = (tempo_trajetoria ** 2) * 0.15 - 0.25
+            fig_trajetoria = go.Figure()
+            fig_trajetoria.add_trace(go.Scatter(x=[0], y=[0], mode="markers+text", marker=dict(size=35, color="#00E5FF"), text=["TERRA"], textposition="top center"))
+            fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_original, mode="lines", name="Rota Original", line=dict(color="#FF2E93", dash="dash")))
+            
+            if simular_impacto:
+                fator_desvio = (potencia / 100) * 0.48
+                if "Nuclear" in arma: fator_desvio *= 1.80
+                elif "Laser" in arma: fator_desvio *= 1.15
+                y_desviada = y_original + fator_desvio
+                fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_desviada, mode="lines", name="Nova Rota Calculada", line=dict(color="#00FF66", width=4)))
+                st.success(f"✅ OPERAÇÃO CONCLUÍDA: O objeto foi desviado com segurança.")
+            
+            fig_trajetoria.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', margin=dict(l=10, r=10, b=10, t=20), height=200, xaxis=dict(range=[-5, 5]), yaxis=dict(range=[-1.5, 2.5]))
+            st.plotly_chart(fig_trajetoria, use_container_width=True)
+
+    st.markdown("---")
+    st.markdown("<p style='text-align: center; color: #334155; font-size: 11px;'>SISTEMA MILITAR INTEGRADO AEGIS - CENTRO DE DEFESA PLANETÁRIA INTERNACIONAL © 2026 // ACESSO RESTRITO</p>", unsafe_allow_html=True)
+
+if not st.session_state['authenticated']:
+    login_page()
+else:
+    main_dashboard()
