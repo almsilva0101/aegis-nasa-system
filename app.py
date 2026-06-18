@@ -44,16 +44,6 @@ st.markdown("""
         }
         .manual-title { color: #38BDF8; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
         .manual-text { color: #94A3B8; font-size: 13px; line-height: 1.6; }
-        
-        /* Tags de Destaque para as APIs */
-        .api-tag {
-            background-color: #1E293B;
-            color: #38BDF8;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 11px;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -112,7 +102,6 @@ def main_dashboard():
     }
     target_tic = tic_map[target_option]
 
-    # ADICIONADA A NOVA QUARTA ABA PARA RASTREAMENTO DE SATÉLITES GLOBAL
     tab_exoplanetas, tab_telescopios, tab_satelites, tab_defesa = st.tabs([
         "🌌 1. Triagem de Exoplanetas & Anomalias",
         "🛰️ 2. Telemetria Preditiva & Saúde de Frota",
@@ -239,7 +228,7 @@ def main_dashboard():
             st.plotly_chart(fig_temp, use_container_width=True)
 
     # =====================================================================
-    # ABA 3: MONITORAMENTO GLOBAL DE SATÉLITES E MATRIZ DE APIs (A INOVAÇÃO)
+    # ABA 3: MONITORAMENTO GLOBAL DE SATÉLITES E MATRIZ DE APIs
     # =====================================================================
     with tab_satelites:
         st.markdown("### 🌍 Monitoramento e Ingestão de Constelações Orbitais e Detritos Espaciais")
@@ -268,11 +257,10 @@ def main_dashboard():
             
             np.random.seed(101)
             n_satelites = 250
-            # Simulação de distribuições de altitudes reais (LEO, MEO, GEO)
             altitudes_simuladas = np.concatenate([
-                np.random.uniform(300, 2000, 150),   # LEO (Starlink, ISS)
-                np.random.uniform(2000, 20000, 60),  # MEO (GPS, Galileo)
-                np.random.uniform(35000, 36000, 40)  # GEO (Satélites Climáticos/Comunicações)
+                np.random.uniform(300, 2000, 150),
+                np.random.uniform(2000, 20000, 60),
+                np.random.uniform(35000, 36000, 40)
             ])
             
             df_sat = pd.DataFrame({
@@ -304,15 +292,15 @@ def main_dashboard():
                     "NORAD / Space-Track", "NOAA (SWPC)", "NASA Orbital Debris", 
                     "NASA Portal (JPL)", "SpaceX Open API", "NASA NeoWs API"
                 ],
-                "API Endpoint Utilizada",: [
+                "API Endpoint Utilizada": [
                     "space-track.org/api/v1", "swpc.noaa.gov/json/data", "orbitaldebris.jsc.nasa.gov", 
                     "api.nasa.gov/planetary/exoplanet", "api.spacexdata.com/v4", "api.nasa.gov/neo/rest/v1"
                 ],
-                "Frequência / Protocolo": ["De 2h em 2h // JSON", "Tempo Real // REST", "Semanal // CSV", "Diário // REST REST", "A cada 12h // JSON", "Contínuo // HASH Link"]
+                "Frequência / Protocolo": ["De 2h em 2h // JSON", "Tempo Real // REST", "Semanal // CSV", "Diário // REST", "A cada 12h // JSON", "Contínuo // HASH Link"]
             }
             df_api_ledger = pd.DataFrame(api_data)
             st.dataframe(df_api_ledger, use_container_width=True, hide_index=True)
-            st.markdown("<p style='font-size: 12px; color: #64748B;'>* Nota: As camadas de segurança do proxy corporativo realizam o cache preventivo desses endpoints para manter a estabilidade do pipeline interno do banco de dados.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 12px; color: #64748B;'>* Nota: As camadas de segurança do proxy corporativo realizam o cache preventivo desses endpoints para manter a estabilidade do pipeline interno.</p>", unsafe_allow_html=True)
 
     # =====================================================================
     # ABA 4: DEFESA PLANETÁRIA
@@ -376,7 +364,7 @@ def main_dashboard():
             y_original = (tempo_trajetoria ** 2) * 0.15 - 0.25
             fig_trajetoria = go.Figure()
             fig_trajetoria.add_trace(go.Scatter(x=[0], y=[0], mode="markers+text", marker=dict(size=35, color="#00E5FF"), text=["TERRA"], textposition="top center"))
-            fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_original, mode="lines", name="Rota Original", line=dict(color="#FF2E93", dash="dash")))
+            fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_original, mode="lines", name="Rota Original", line=dict(color="#FF2E93", width=2, dash="dash")))
             
             if simular_impacto:
                 fator_desvio = (potencia / 100) * 0.48
