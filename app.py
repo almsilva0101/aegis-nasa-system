@@ -6,46 +6,56 @@ import pandas as pd
 import numpy as np
 import time
 
-# Configuração de Centro de Comando Tático da NASA
-st.set_page_config(page_title="AEGIS - NASA Deep Space Intelligence", layout="wide", initial_sidebar_state="expanded")
+# Configuração de Centro de Comando Tático de Defesa Aeroespacial
+st.set_page_config(page_title="AEGIS - Strategic Space Defense", layout="wide", initial_sidebar_state="expanded")
 
 # --- SISTEMA DE SEGURANÇA (AUTENTICAÇÃO ZERO TRUST) ---
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
 def login_page():
-    st.markdown("<h1 style='text-align: center; color: #FF3D00;'>🛡️ A.E.G.I.S.</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center; color: #FFFFFF;'>Advanced Anomaly Galactic Intelligence System</h3>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #FF2E93;'>🛡️ A.E.G.I.S.</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #FFFFFF;'>Advanced Planetary Defense & Galactic Intelligence System</h3>", unsafe_allow_html=True)
     st.write("")
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         with st.form("aegis_login"):
-            st.markdown("### **Acesso Restrito - Credenciais de Operador NASA**")
+            st.markdown("### **Acesso de Segurança de Alto Nível - NORAD / NASA**")
             user = st.text_input("ID do Operador (Username)", "nasa_operator_01")
             password = st.text_input("Chave Criptográfica (Password)", type="password")
-            submitted = st.form_submit_button("AUTENTICAR NO PIPELINE DE DADOS")
+            submitted = st.form_submit_button("SISTEMA DE ARMARE / AUTENTICAR")
             
             if submitted:
                 if user == "nasa_operator_01" and password == "artemis2026":
                     st.session_state['authenticated'] = True
-                    st.success("Acesso Concedido. Inicializando módulos táticos...")
+                    st.success("Acesso Concedido. Inicializando matriz de armas táticas...")
                     time.sleep(0.5)
                     st.rerun()
                 else:
                     st.error("Falha na autenticação.")
 
 def main_dashboard():
-    st.markdown("<p style='color: #FF3D00; font-size: 14px; margin-bottom: 0;'>🔥 TELEMETRIA ESPACIAL MULTIMODAL ATIVA // PROTOCOLO AEGIS-2026</p>", unsafe_allow_html=True)
-    st.title("🛰️ AEGIS - Sistema Integrado de Defesa e Exploração Espacial")
+    st.markdown("<p style='color: #FF2E93; font-size: 14px; margin-bottom: 0;'>🚨 COMMAND CENTER: PLANETARY DEFENSE MODE ENFORCED // INTERCEPT ENGINE ON</p>", unsafe_allow_html=True)
+    st.title("🛰️ AEGIS - Central de Resposta Balística e Defesa Planetária")
     st.markdown("---")
 
     # --- MENU PRINCIPAL EM ABAS ---
-    tab_exoplanetas, tab_telescopios, tab_meteoros = st.tabs([
+    tab_exoplanetas, tab_telescopios, tab_defesa_ativa = st.tabs([
         "🌌 1. Triagem de Exoplanetas & Anomalias", 
         "🛰️ 2. Status da Frota de Telescópios", 
-        "☄️ 3. Defesa Planetária (Rastreamento de Meteoros)"
+        "💥 3. CONTRA-MEDIDA E LOGÍSTICA DE INTERCEPTAÇÃO DE METEOROS"
     ])
+
+    # Datasets de apoio compartilhados entre funções
+    estrelas_data = {
+        "ID da Estrela": ["TIC 119041565", "TIC 261136665", "TIC 27877559", "TIC 88843211"],
+        "Telescópio de Origem": ["Kepler (NASA)", "TESS (NASA)", "James Webb (NASA/ESA)", "TESS (NASA)"],
+        "Desvio Padrão (σ)": [4.2, 8.9, 1.2, 25.4],
+        "Confiança da IA": [0.94, 0.88, 0.12, 0.99],
+        "Classificação Preliminar": ["Exoplaneta Candidato", "Exoplaneta Candidato", "Ruído Instrumental", "Anomalia Não Identificada"]
+    }
+    df_triagem = pd.DataFrame(estrelas_data)
 
     # ==========================================
     # ABA 1: EXOPLANETAS E ANOMALIAS
@@ -53,16 +63,6 @@ def main_dashboard():
     with tab_exoplanetas:
         st.markdown("### 🔬 Pipeline de Inteligência em Sinais de Órbita Profunda")
         
-        with st.expander("📘 O que estamos fazendo aqui? (Explicação Científica)"):
-            st.write("""
-            **Objetivo:** Identificar planetas fora do nosso sistema solar ou anomalias cósmicas.
-            * **O que é a Fila de Triagem?** É uma tabela gerada por algoritmos de Machine Learning. Ela varre milhões de estrelas e isola apenas aquelas onde o brilho mudou de forma suspeita.
-            * **O que é o Desvio Padrão (σ)?** Mede o quão 'estranho' ou ruidoso é o sinal. Quanto maior o Sigma (σ), mais discrepante e anômalo é o comportamento da estrela.
-            * **O que é o Mapa 3D?** Mostra a localização espacial exata de cada estrela analisada em relação à Terra em anos-luz.
-            * **O que é o Gráfico de Espectro/Fluxo?** É a curva de luz da estrela. Se uma linha tiver uma queda em formato de 'U', significa que um exoplaneta passou na frente dela bloqueando a luz (Método do Trânsito). Se a linha for caótica e cheia de picos, isolamos uma **Anomalia Não Identificada**.
-            """)
-
-        # Configuração da barra lateral apenas para esta aba
         st.sidebar.markdown("## **Configurações de Busca**")
         target_option = st.sidebar.selectbox(
             "Selecionar Estrela Alvo",
@@ -77,15 +77,6 @@ def main_dashboard():
         }
         target_tic = tic_map[target_option]
 
-        # Tabela de dados
-        estrelas_data = {
-            "ID da Estrela": ["TIC 119041565", "TIC 261136665", "TIC 27877559", "TIC 88843211"],
-            "Telescópio de Origem": ["Kepler (NASA)", "TESS (NASA)", "James Webb (NASA/ESA)", "TESS (NASA)"],
-            "Desvio Padrão (σ)": [4.2, 8.9, 1.2, 25.4],
-            "Confiança da IA": [0.94, 0.88, 0.12, 0.99],
-            "Classificação Preliminar": ["Exoplaneta Candidato", "Exoplaneta Candidato", "Ruído Instrumental", "Anomalia Não Identificada"]
-        }
-        df_triagem = pd.DataFrame(estrelas_data)
         st.dataframe(df_triagem, use_container_width=True)
 
         col_mapa, col_dados = st.columns([1, 1])
@@ -114,7 +105,7 @@ def main_dashboard():
                 fluxo = 1.0 + np.random.randn(1000) * 0.005
                 fluxo[300:400] -= np.linspace(0, 0.06, 100)
                 fluxo[700:750] += np.random.randn(50) * 0.015
-                cor = '#FF3D00'
+                cor = '#FF2E93'
             elif "Exoplaneta" in dados_alvo["Classificação Preliminar"]:
                 fluxo = 1.0 + np.random.randn(1000) * 0.001
                 fluxo[400:500] -= 0.015
@@ -134,92 +125,109 @@ def main_dashboard():
     # ==========================================
     with tab_telescopios:
         st.markdown("### 🛰️ Telemetria de Saúde dos Observatórios Espaciais")
-        
-        with st.expander("📘 O que significa este Dashboard de Telescópios?"):
-            st.write("""
-            **Objetivo:** Monitorar as condições físicas dos equipamentos na órbita da Terra e no espaço profundo.
-            * **Temperatura Criogênica:** Telescópios infravermelhos (como o James Webb) precisam operar em temperaturas extremamente baixas (perto do zero absoluto, -233°C) para não queimar seus sensores de calor. Se a temperatura subir, o dado fica corrompido!
-            * **Combustível Restante:** Essencial para manobras de órbita e desvio de detritos espaciais.
-            """)
-
         col_t1, col_t2, col_t3 = st.columns(3)
-        
         with col_t1:
             st.markdown("#### **TESS (Transiting Exoplanet Survey)**")
             st.metric("Status Operacional", "ONLINE", delta="Estável")
             st.progress(0.74, text="Combustível Hidrazina: 74%")
-            st.metric("Temperatura do Sensor", "-80°C", delta="Ideal")
-
         with col_t2:
             st.markdown("#### **James Webb (JWST)**")
             st.metric("Status Operacional", "COLETANDO DADOS", delta="Carga Alta", delta_color="inverse")
             st.progress(0.89, text="Combustível de Órbita: 89%")
-            st.metric("Temperatura Criogênica (MIRI)", "-266°C", delta="-1°C (Excelente)")
-
         with col_t3:
             st.markdown("#### **Kepler Telescope**")
             st.metric("Status Operacional", "APOSENTADO / ARQUIVO", delta="Inativo", delta_color="off")
-            st.progress(0.0, text="Combustível: 0%")
-            st.write("Dados históricos consolidados integrados ao AEGIS database.")
 
     # ==========================================
-    # ABA 3: DEFESA PLANETÁRIA (METEOROS E ASTEROIDES)
+    # ABA 3: INOVAÇÃO RADICAL - DEFESA PLANETÁRIA ATIVA
     # ==========================================
-    with tab_meteoros:
-        st.markdown("### ☄️ Rastreamento de Objetos Próximos à Terra (NEOs)")
+    with tab_defesa_ativa:
+        st.markdown("### ☄️ Sistema de Mitigação Orbital Ativa (O que a NASA não integrou!)")
         
-        with st.expander("📘 O que estamos fazendo aqui? (Defesa Planetária)"):
+        with st.expander("📘 Entendendo o Módulo de Interceptação Tática"):
             st.write("""
-            **Objetivo:** Evitar um evento de extinção em massa rastreando Meteoroides, Meteoros e Asteroides potencialmente perigosos (PHA).
-            * **Distância de Falha (Miss Distance):** A distância mínima que o objeto vai passar da Terra. Medida em 'Distâncias Lunares' (LD) — 1 LD é a distância da Terra até a Lua.
-            * **Diâmetro Estimado:** O tamanho da rocha espacial. Objetos maiores que 140 metros são considerados ameaças catastróficas regionais.
-            * **Escala de Torino:** Uma métrica de 0 a 10 que avalia o risco de colisão. 0 significa risco nulo; 10 significa colisão global certa.
+            **O Diferencial Tecnológico:** A maioria dos sistemas espaciais apenas avisa sobre o perigo. O AEGIS calcula a **Matriz de Interceptação Espacial**.
+            Ao selecionar um objeto perigoso e uma contra-medida, o sistema simula a transferência de energia cinética e plota no gráfico a deflexão orbital necessária para fazer o asteroide errar a Terra.
             """)
 
-        # Simulando base de dados de asteroides e meteoros detectados na semana
+        # Banco de Dados de Meteoros/Asteroides Perigosos
         meteoros_data = {
-            "Nome do Objeto": ["Meteoróide M-2026_AQ", "Asteroide Apophis 99942", "Asteroide 2026-XC4", "Meteoro de Entrada Rápida BEN-10"],
-            "Diâmetro Est. (Metros)": [12, 370, 145, 3],
-            "Velocidade (km/h)": [45000, 110000, 67000, 82000],
-            "Distância Mínima (LD)": [1.4, 0.12, 4.5, 0.01],
-            "Escala de Torino": [0, 2, 1, 0],
-            "Risco de Impacto": ["Nulo (Queima na Atmosfera)", "Atenção (Monitoramento Kinetico)", "Baixo Risco", "Nulo (Impacto Balístico Pequeno)"]
+            "Nome do Objeto": ["Asteroide Apophis 99942", "Corpo Hiperbólico PHA-2026", "Fragmento de Meteoro M-102"],
+            "Diâmetro Est. (Metros)": [370, 850, 45],
+            "Velocidade Atual (km/h)": [110000, 145000, 48000],
+            "Distância de Impacto (LD)": [0.12, 0.04, 0.01],
+            "Nível de Ameaça": ["Crítico", "Catastrófico (Extinção)", "Médio"]
         }
         df_meteoros = pd.DataFrame(meteoros_data)
         st.dataframe(df_meteoros, use_container_width=True)
 
-        st.subheader("🌐 Radar de Aproximação de Trajetórias Orbitais")
+        st.markdown("---")
+        st.markdown("### 🛠️ Console de Comando de Deflexão Cinética")
         
-        # Criando um Gráfico de Radar Espacial Orbital (Gráfico de dispersão polar ou circular)
-        # Mostra a Terra no centro e a distância dos meteoros vindo em direção ao planeta
-        fig_radar = go.Figure()
+        col_ctrl, col_radar = st.columns([1, 2])
         
-        # Desenha a Terra no centro (Ponto 0)
-        fig_radar.add_trace(go.Scatter(x=[0], y=[0], mode='markers+text', marker=dict(size=30, color='#00E5FF'), text=["TERRA"], textposition="top center"))
-        
-        # Plota os objetos espaciais com base em suas distâncias aproximadas
-        fig_radar.add_trace(go.Scatter(
-            x=[1.2, -0.09, -3.2, 0.4], 
-            y=[0.7, 0.08, 3.1, -0.1], 
-            mode='markers+text',
-            marker=dict(size=df_meteoros["Diâmetro Est. (Metros)"]/10 + 10, color=df_meteoros["Escala de Torino"], colorscale='Reds', showscale=True),
-            text=df_meteoros["Nome do Objeto"],
-            textposition="bottom center"
-        ))
-        
-        fig_radar.update_layout(
-            title="Posicionamento Relativo de Objetos em Rota de Aproximação (Distância em Unidades Lunares)",
-            paper_bgcolor='black', plot_bgcolor='black', font_color='white',
-            xaxis=dict(showgrid=True, zeroline=True, range=[-6, 6]),
-            yaxis=dict(showgrid=True, zeroline=True, range=[-6, 6])
-        )
-        st.plotly_chart(fig_radar, use_container_width=True)
+        with col_ctrl:
+            st.markdown("##### **1. Seleção de Ameaça Orbital**")
+            alvo_defesa = st.selectbox("Escolha a rocha para simulação de impacto tático:", df_meteoros["Nome do Objeto"])
+            
+            st.markdown("##### **2. Arsenal de Deflexão Selecionável**")
+            arma = st.radio(
+                "Escolha o Tipo de Contra-Medida:",
+                ["🚀 Impactador Cinético Puro (Sonda estilo DART)", "🛰️ Matriz de Laser Térmico Estacionário", "💥 Ogiva de Pulso Nuclear de Desvio"]
+            )
+            
+            potencia = st.slider("Massa/Potência do Vetor de Interceptação (em Toneladas/Megawatts):", 10, 500, 150)
+            
+            simular_impacto = st.button("💥 EXECUTAR CÁLCULO DE INTERCEPTAÇÃO")
+            
+        with col_radar:
+            # Trajetória baseada nos controles interativos do usuário
+            tempo_trajetoria = np.linspace(-5, 5, 200)
+            
+            # Curva original calculada (Passa raspando ou batendo na Terra)
+            y_original = (tempo_trajetoria ** 2) * 0.15 - 0.2
+            
+            fig_trajetoria = go.Figure()
+            
+            # Adiciona representação da Terra no centro de impacto (0,0)
+            fig_trajetoria.add_trace(go.Scatter(x=[0], y=[0], mode="markers+text", marker=dict(size=40, color="#00E5FF"), text=["TERRA (Alvo)"], textposition="top center"))
+            
+            # Adiciona a linha original da trajetória do perigo
+            fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_original, mode="lines", name="Trajetória Original de Colisão", line=dict(color="#FF2E93", dash="dash")))
+            
+            if simular_impacto:
+                with st.spinner("Processando dinâmica de corpos orbitais e transferência de momento..."):
+                    time.sleep(0.8)
+                    
+                    # Cálculo simulado de deflexão baseado na potência escolhida pelo usuário
+                    fator_desvio = (potencia / 100) * 0.4
+                    if "Nuclear" in arma:
+                        fator_desvio *= 1.8
+                    
+                    y_desviada = y_original + fator_desvio
+                    
+                    # Adiciona a nova curva calculada pela IA do AEGIS provando o desvio do asteroide
+                    fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_desviada, mode="lines", name="Nova Trajetória Pós-Impacto (Calculada)", line=dict(color="#00FF66", width=4)))
+                    
+                    # Ponto exato do impacto cinético da nossa arma contra a rocha
+                    fig_trajetoria.add_trace(go.Scatter(x=[-2], y=[0.4], mode="markers+text", marker=dict(size=15, color="#FFFF00", symbol="star"), text=["💥 PONTO DE IMPACTO DART-2"], textposition="top right"))
+                    
+                    st.success(f"✅ SUCESSO DE DEFLEXÃO: {alvo_defesa} desviado com sucesso em {fator_desvio*100:,.2f} mil quilômetros da atmosfera terrestre.")
+            else:
+                st.info("Aguardando ativação do sistema. Configure a potência e dispare o vetor para ver o desvio em tempo real.")
 
-    # --- FOOTER DO PRODUTO ---
+            fig_trajetoria.update_layout(
+                title="Simulador Dinâmico de Vetores de Impacto Orbital e Deflexão",
+                xaxis_title="Eixo de Aproximação Orbital X (Unidades Lunares)",
+                yaxis_title="Variação de Desvio Y (Unidades Lunares)",
+                paper_bgcolor='black', plot_bgcolor='black', font_color='white',
+                xaxis=dict(range=[-5, 5], showgrid=True), yaxis=dict(range=[-2, 3], showgrid=True)
+            )
+            st.plotly_chart(fig_trajetoria, use_container_width=True)
+
     st.markdown("---")
     st.markdown("<p style='text-align: center; color: #555;'>SISTEMA MILITAR INTEGRADO AEGIS - CENTRO DE INTELIGÊNCIA ESPACIAL DA NASA © 2026</p>", unsafe_allow_html=True)
 
-# Controle de Fluxo Geral
 if not st.session_state['authenticated']:
     login_page()
 else:
