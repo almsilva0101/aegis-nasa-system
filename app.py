@@ -120,7 +120,8 @@ def main_dashboard():
             <div class='manual-text'>
                 <b>O que é:</b> Um analisador estatístico de fotometria profunda automatizado por algoritmos de Machine Learning.<br>
                 <b>Como funciona:</b> O sistema varre o fluxo luminoso de estrelas distantes. Quedas periódicas na recepção de fótons indicam corpos ocultos obstruindo o brilho (Método do Trânsito).<br>
-                <b>Para que serve:</b> Identificar de forma proativa exoplanetas candidatos à colonização ou anomalias estruturais massivas.
+                <b>Para que serve:</b> Identificar de forma proativa exoplanetas candidatos à colonização ou anomalias estruturais massivas.<br>
+                <b>Integração de API Pública:</b> Consome dados diretamente do <b>NASA Portal (JPL)</b> através do endpoint <code>api.nasa.gov/planetary/exoplanet</code>, que disponibiliza os dados consolidados do arquivo de exoplanetas da NASA.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -182,7 +183,8 @@ def main_dashboard():
             <div class='manual-text'>
                 <b>O que é:</b> Uma infraestrutura inédita de Gêmeo Digital (Digital Twin) acoplada a modelos preditivos de degradação estrutural e de sistemas.<br>
                 <b>Como funciona:</b> Ingere telemetria de condições térmicas e níveis de propelente, rodando algoritmos de análise de sobrevivência para calcular o tempo até a próxima falha.<br>
-                <b>Para que serve:</b> Permitir gerenciamento prescritivo, simulando manobras preventivas para estender a vida útil das missões.
+                <b>Para que serve:</b> Permitir gerenciamento prescritivo, simulando manobras preventivas para estender a vida útil das missões.<br>
+                <b>Integração de API Pública:</b> Integra dados de telemetria meteorológica solar e radiação do <b>NOAA (SWPC)</b> via <code>swpc.noaa.gov/json/data</code> para cruzar anomalias térmicas e impactos de ventos cósmicos nos sensores.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -312,8 +314,9 @@ def main_dashboard():
             <div class='manual-title'>📘 DIRETRIZ OPERACIONAL - O QUE É, COMO FUNCIONA E PARA QUE SERVE</div>
             <div class='manual-text'>
                 <b>O que é:</b> A maior matriz integrada de rastreamento e cálculo balístico de deflexão de corpos perigosos do planeta.<br>
-                <b>Como funciona:</b> Organiza dados de estações globais de varredura. Havendo perigo real, o simulador à direita calcula vetores de impacto.<br>
-                <b>Para que serve:</b> Prevenir impactos catastróficos mapeando o desvio orbital exato gerado por contra-medidas.
+                <b>Como funciona:</b> Organiza dados de estações globais de varredura. Havendo perigo real, o simulador à direita calcula vetores diários de impacto.<br>
+                <b>Para que serve:</b> Prevenir impactos catastróficos mapeando o desvio orbital exato gerado por contra-medidas.<br>
+                <b>Integração de API Pública:</b> Utiliza em tempo real a API <b>NASA NeoWs (Near Earth Object Web Service)</b> através do endpoint <code>api.nasa.gov/neo/rest/v1</code> para extração sistemática de diâmetro, velocidade e aproximação de asteroides de risco.
             </div>
         </div>
         """, unsafe_allow_html=True)
