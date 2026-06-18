@@ -102,7 +102,6 @@ def main_dashboard():
     }
     target_tic = tic_map[target_option]
 
-    # COMPILADO FINAL DE ABAS INOVADORAS E INTEGRADAS
     tab_exoplanetas, tab_telescopios, tab_satelites, tab_sistema_solar, tab_defesa = st.tabs([
         "🌌 1. Triagem de Exoplanetas",
         "🛰️ 2. Telemetria de Saúde da Frota",
@@ -185,7 +184,7 @@ def main_dashboard():
             <div class='manual-text'>
                 <b>O que é:</b> Uma infraestrutura inédita de Gêmeo Digital acoplada a modelos preditivos de degradação de hardware aeroespacial.<br>
                 <b>Como funciona:</b> Analisa parâmetros de temperatura térmica profunda e consumo de combustível, rodando análises de sobrevivência computacional para prever falhas.<br>
-                <b>Para que serve:</b> Permitir manobras proativas de redirecionamento de carga para estender a longevidade operacional das sondas espaciais.<br>
+                <b>Para que serve:</b> Permitir gerenciamento prescritivo, simulando manobras preventivas para estender a longevidade operacional das sondas espaciais.<br>
                 <b>API de Integração Pública:</b> Consome dados meteorológicos de radiação do <b>NOAA Space Weather Prediction Center</b> através do endpoint <code>swpc.noaa.gov/json/data/solar-cycle</code> para mapear eventos magnéticos nocivos ao hardware.
             </div>
         </div>
@@ -279,7 +278,7 @@ def main_dashboard():
             st.dataframe(pd.DataFrame(api_data), use_container_width=True, hide_index=True)
 
     # =====================================================================
-    # ABA 4: MONITORAMENTO TÁTICO DO SISTEMA SOLAR (A NOVA MÁGICA)
+    # ABA 4: MONITORAMENTO TÁTICO DO SISTEMA SOLAR
     # =====================================================================
     with tab_sistema_solar:
         st.markdown("### 🪐 Orrery Digital & Monitoramento de Clima Heliocêntrico Avançado")
@@ -301,19 +300,16 @@ def main_dashboard():
             st.markdown("#### 🪐 Mapa Heliocêntrico das Órbitas Planetárias Correntes")
             st.caption("Coordenadas dimensionais relativas baseadas na distância em Unidades Astronômicas (AU).")
             
-            # Dados aproximados de distância do Sol (AU) e ângulos simulados para plotar a malha do Sistema Solar
             planetas_nomes = ["Mercúrio", "Vênus", "Terra", "Marte", "Júpiter", "Saturno"]
             distancias_au = [0.39, 0.72, 1.00, 1.52, 5.20, 9.58]
             angulos = [1.2, 2.5, 4.1, 0.8, 5.5, 3.2]
             
             x_planetas = np.cos(angulos) * distancias_au
             y_planetas = np.sin(angulos) * distancias_au
-            z_planetas = np.zeros(6) # Mantendo estável no plano eclíptico
+            z_planetas = np.zeros(6)
             
             fig_solar = go.Figure()
-            # O Sol no Centro
             fig_solar.add_trace(go.Scatter3d(x=[0], y=[0], z=[0], mode="markers", marker=dict(size=25, color="#FFD600"), name="Sol"))
-            # Planetas
             fig_solar.add_trace(go.Scatter3d(
                 x=x_planetas, y=y_planetas, z=z_planetas, mode="markers+text",
                 marker=dict(size=[8, 11, 12, 9, 22, 18], color=distancias_au, colorscale='Viridis'),
@@ -326,7 +322,6 @@ def main_dashboard():
             st.markdown("#### 🧠 Análise do Motor de IA: Previsão de Índice Geomagnético Kp")
             st.caption("O Índice Kp mede a perturbação no campo magnético da Terra (Valores > 5 indicam Tempestade Solar).")
             
-            # Gráfico de Previsão de Série Temporal gerado pela IA
             horas_futuras = np.array(range(1, 13))
             kp_preditivo = [2.1, 2.4, 3.0, 5.8, 7.2, 6.5, 4.2, 3.1, 2.5, 2.0, 1.8, 1.5]
             
@@ -356,4 +351,65 @@ def main_dashboard():
         meteoros_expandidos = {
             "Designação NEO": ["99942 Apophis (2004 MN4)", "101955 Bennu (1999 RQ36)", "4179 Toutatis", "Corpo Hiperbólico PHA-2026", "162173 Ryugu", "2023 NT1", "Fragmento de Meteoro M-102", "Fragmento 2026-XC4"],
             "Diâmetro Est. (m)": [370, 492, 5400, 850, 900, 30, 45, 145],
-            "Velocidade Relativa (km/h)":
+            "Velocidade Relativa (km/h)": [110200, 101000, 39600, 145000, 78000, 86000, 48000, 67000],
+            "Distância Mínima (LD)": [0.12, 0.54, 1.80, 0.04, 3.10, 0.25, 2.50, 4.50],
+            "Mag. Absoluta (H)": [19.2, 20.8, 15.3, 17.1, 18.1, 24.5, 23.1, 21.4],
+            "Escala Torino": [2, 1, 0, 8, 0, 1, 1, 1],
+            "Estação de Varredura": ["Goldstone Radar", "Pan-STARRS 1", "Arecibo Node", "AEGIS DeepSpace", "NEOWISE Space", "Mount Lemmon", "Zwicky Transient", "Pan-STARRS 2"],
+            "Risco Classificado": ["Atenção Orbital", "Baixo Risco", "Nulo (Seguro)", "Ameaça Crítica Regional", "Nulo (Seguro)", "Monitoramento", "Baixo Risco", "Baixo Risco"]
+        }
+        df_meteoros = pd.DataFrame(meteoros_expandidos)
+        st.dataframe(df_meteoros, use_container_width=True, hide_index=True)
+        st.markdown("---")
+
+        col_radar, col_simulador = st.columns([1.1, 1])
+        with col_radar:
+            st.markdown("#### 🌐 1. Radar de Aproximação de Trajetórias (Visão Geral)")
+            df_plot_radar = df_meteoros.head(6)
+            fig_radar = go.Figure()
+            fig_radar.add_trace(go.Scatter(x=[0], y=[0], mode='markers+text', marker=dict(size=35, color='#00E5FF', line=dict(width=2, color='white')), text=["TERRA"], textposition="top center"))
+            x_coords = [1.2, -0.4, -2.2, 0.06, 2.9, -0.7]
+            y_coords = [0.8, 0.50, 1.4, -0.04, -1.3, -0.3]
+            fig_radar.add_trace(go.Scatter(
+                x=x_coords, y=y_coords, mode='markers+text',
+                marker=dict(size=df_plot_radar["Diâmetro Est. (m)"]/22 + 16, color=df_plot_radar["Escala Torino"], colorscale='Reds', showscale=True),
+                text=df_plot_radar["Designação NEO"], textposition="bottom center"
+            ))
+            fig_radar.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', margin=dict(l=10, r=10, b=10, t=20), height=400, xaxis=dict(range=[-4, 4]), yaxis=dict(range=[-3, 3]))
+            st.plotly_chart(fig_radar, use_container_width=True)
+            
+        with col_simulador:
+            st.markdown("#### 💥 2. Terminal Interativo de Mitigação e Deflexão")
+            st.markdown("<div class='card-painel'>", unsafe_allow_html=True)
+            alvo_defesa = st.selectbox("Selecione o Vetor de Ameaça Ativo:", df_meteoros["Designação NEO"])
+            arma = st.radio("Selecione a Contra-Medida:", ["🚀 Sonda de Impacto Cinético (NASA DART)", "🛰️ Laser Térmico de Superfície", "💥 Dispositivo de Pulso Nuclear"])
+            potencia = st.slider("Potência / Output de Energia do Vetor:", 10, 500, 200)
+            simular_impacto = st.button("💥 EXECUTAR CÁLCULO DE DEFLEXÃO")
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            tempo_trajetoria = np.linspace(-5, 5, 200)
+            y_original = (tempo_trajetoria ** 2) * 0.15 - 0.25
+            fig_trajetoria = go.Figure()
+            fig_trajetoria.add_trace(go.Scatter(x=[0], y=[0], mode="markers+text", marker=dict(size=35, color="#00E5FF"), text=["TERRA"], textposition="top center"))
+            fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_original, mode="lines", name="Rota Original", line=dict(color="#FF2E93", width=2, dash="dash")))
+            
+            if simular_impacto:
+                fator_desvio = (potencia / 100) * 0.48
+                if "Nuclear" in arma: 
+                    fator_desvio *= 1.80
+                elif "Laser" in arma: 
+                    fator_desvio *= 1.15
+                y_desviada = y_original + fator_desvio
+                fig_trajetoria.add_trace(go.Scatter(x=tempo_trajetoria, y=y_desviada, mode="lines", name="Nova Rota Calculada", line=dict(color="#00FF66", width=4)))
+                st.success(f"✅ OPERAÇÃO CONCLUÍDA: O objeto foi desviado com segurança.")
+            
+            fig_trajetoria.update_layout(paper_bgcolor='#0B0F17', plot_bgcolor='#0B0F17', font_color='white', margin=dict(l=10, r=10, b=10, t=20), height=200, xaxis=dict(range=[-5, 5]), yaxis=dict(range=[-1.5, 2.5]))
+            st.plotly_chart(fig_trajetoria, use_container_width=True)
+
+    st.markdown("---")
+    st.markdown("<p style='text-align: center; color: #334155; font-size: 11px;'>SISTEMA MILITAR INTEGRADO AEGIS - CENTRO DE DEFESA PLANETÁRIA INTERNACIONAL © 2026 // ACESSO RESTRITO</p>", unsafe_allow_html=True)
+
+if not st.session_state['authenticated']:
+    login_page()
+else:
+    main_dashboard()
