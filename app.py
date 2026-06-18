@@ -47,31 +47,67 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Inicializa a sessão de autenticação e o "banco de dados" temporário de usuários
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
-def login_page():
-    st.markdown("<h1 style='text-align: center; color: #FF2E93; margin-top: 5rem; margin-bottom: 0;'>🛡️ A.E.G.I.S.</h1>", unsafe_allow_html=True)
+if 'usuarios_db' not in st.session_state:
+    # Cadastro padrão inicial para manter o acesso anterior ativo
+    st.session_state['usuarios_db'] = {
+        "nasa_chief_commander": "orion2026"
+    }
+
+def login_cadastro_page():
+    st.markdown("<h1 style='text-align: center; color: #FF2E93; margin-top: 3rem; margin-bottom: 0;'>🛡️ A.E.G.I.S.</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #64748B; font-size: 15px; letter-spacing: 1px;'>Advanced Planetary Defense & Galactic Intelligence System</p>", unsafe_allow_html=True)
     st.write("")
     
-    col1, col2, col3 = st.columns([1, 1.3, 1])
+    col1, col2, col3 = st.columns([1, 1.5, 1])
     with col2:
         st.markdown("<div class='card-painel'>", unsafe_allow_html=True)
-        with st.form("aegis_secure_login"):
-            st.markdown("### **Autenticação Biométrica / Chave Operacional**")
-            user = st.text_input("Identificador do Operador", "nasa_chief_commander")
-            password = st.text_input("Token Criptográfico", type="password")
-            submitted = st.form_submit_button("DESBLOQUEAR TERMINAL CRÍTICO")
-            
-            if submitted:
-                if user == "nasa_chief_commander" and password == "orion2026":
-                    st.session_state['authenticated'] = True
-                    st.success("🔒 Acesso autorizado. Inicializando AEGIS Core...")
-                    time.sleep(0.5)
-                    st.rerun()
-                else:
-                    st.error("❌ Credenciais inválidas.")
+        
+        # Criação das abas de Login e Cadastro na tela inicial
+        tab_login, tab_cadastro = st.tabs(["🔒 Acessar Terminal", "📝 Registrar Operador"])
+        
+        # --- FORMULÁRIO DE LOGIN ---
+        with tab_login:
+            with st.form("aegis_secure_login"):
+                st.markdown("### **Autenticação Biométrica / Credenciais**")
+                user = st.text_input("Identificador do Operador", placeholder="Ex: nasa_chief_commander")
+                password = st.text_input("Token Criptográfico", type="password")
+                submitted_login = st.form_submit_button("DESBLOQUEAR TERMINAL CRÍTICO")
+                
+                if submitted_login:
+                    # Verifica se o usuário existe e se a senha está correta
+                    if user in st.session_state['usuarios_db'] and st.session_state['usuarios_db'][user] == password:
+                        st.session_state['authenticated'] = True
+                        st.success(f"🔒 Acesso autorizado para {user}. Inicializando AEGIS Core...")
+                        time.sleep(0.5)
+                        st.rerun()
+                    else:
+                        st.error("❌ Credenciais inválidas ou operador não cadastrado.")
+                        
+        # --- FORMULÁRIO DE CADASTRO ---
+        with tab_cadastro:
+            with st.form("aegis_secure_register"):
+                st.markdown("### **Solicitar Novo Acesso de Segurança**")
+                new_user = st.text_input("Novo Identificador (Usuário)", placeholder="Ex: astronauta_jones").strip()
+                new_password = st.text_input("Definir Token (Senha)", type="password")
+                confirm_password = st.text_input("Confirmar Token", type="password")
+                submitted_register = st.form_submit_button("CADASTRAR NOVO OPERADOR")
+                
+                if submitted_register:
+                    if not new_user or not new_password:
+                        st.error("❌ Todos os campos devem ser preenchidos.")
+                    elif new_user in st.session_state['usuarios_db']:
+                        st.error("❌ Este identificador de operador já está em uso.")
+                    elif new_password != confirm_password:
+                        st.error("❌ Os tokens criptográficos não coincidem.")
+                    else:
+                        # Adiciona o novo usuário ao dicionário de credenciais
+                        st.session_state['usuarios_db'][new_user] = new_password
+                        st.success(f"✅ Operador '{new_user}' cadastrado com sucesso! Vá para a aba de login para acessar.")
+                        
         st.markdown("</div>", unsafe_allow_html=True)
 
 def main_dashboard():
@@ -81,7 +117,10 @@ def main_dashboard():
         st.title("🛰️ AEGIS Operational Command Center")
     with header_col2:
         st.write("")
-        st.markdown("<div style='text-align: right; color: #64748B; font-size: 12px; line-height: 1.4;'>SISTEMA OPERACIONAL DA NASA<br>NÓ CENTRAL DE MISSÃO // V8.0</div>", unsafe_allow_html=True)
+        # Botão de Logout para permitir trocar de usuário facilmente
+        if st.button("🔒 LOGOUT / ENCERRAR SESSÃO"):
+            st.session_state['authenticated'] = False
+            st.rerun()
     
     st.markdown("---")
 
@@ -239,7 +278,7 @@ def main_dashboard():
         <div class='manual-box'>
             <div class='manual-title'>📘 DIRETRIZ OPERACIONAL - O QUE É, COMO FUNCIONA E PARA QUE SERVE</div>
             <div class='manual-text'>
-                <b>O que é:</b> Um hub de rastreamento de satélites comerciais/militares e nuvens de detritos artificiais circundando a Terra.<br>
+                <b>O que é:</b> Um hub de tracking de satélites comerciais/militares e nuvens de detritos artificiais circundando a Terra.<br>
                 <b>Como funciona:</b> Processa matrizes de dados estruturados em conjuntos TLE (Two-Line Elements) para mapear a altitude geocêntrica dos bólidos.<br>
                 <b>Para que serve:</b> Auditar rotas, mitigar colisões em órbita baixa e mapear os canais públicos integrados à rede.<br>
                 <b>API de Integração Pública:</b> Consome posições orbitais agregadas via <b>NORAD Space-Track Open API</b> (<code>space-track.org/api/v1</code>) e dados de lixo espacial do <b>NASA Orbital Debris Program Office</b>.
@@ -409,7 +448,8 @@ def main_dashboard():
     st.markdown("---")
     st.markdown("<p style='text-align: center; color: #334155; font-size: 11px;'>SISTEMA MILITAR INTEGRADO AEGIS - CENTRO DE DEFESA PLANETÁRIA INTERNACIONAL © 2026 // ACESSO RESTRITO</p>", unsafe_allow_html=True)
 
+# Lógica de Renderização Principal do App
 if not st.session_state['authenticated']:
-    login_page()
+    login_cadastro_page()
 else:
     main_dashboard()
